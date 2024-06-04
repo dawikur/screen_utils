@@ -15,16 +15,18 @@
 
 	<style>
 		* {
+			box-sizing: border-box;
+			cursor: crosshair;
 			margin: 0;
 			padding: 0;
-			box-sizing: border-box;
+			background-color: #FFFFFF;
 		}
 
 		.vertical {
 			border: 1px solid black;
 			height: 100%;
-			position: absolute;
 			left: 50%;
+			position: absolute;
 		}
 
 		.horizontal {
@@ -34,18 +36,99 @@
 			top: 50%;
 		}
 
+		#mouse {
+			position: absolute;
+		}
+
+		#width {
+			position: absolute;
+			top: calc(50% + 10px);
+			right: 10px;
+		}
+
+		#height {
+			position: absolute;
+			bottom: 10px;
+			left: calc(50% + 10px);
+		}
+
+		#hint {
+			bottom: 10px;
+			color: #a0a0a0;
+			font-style: italic;
+			position: absolute;
+			right: 10px;
+		}
+
 	</style>
 
+	<script>
+		window.onload = function() {
+			var resize = function() {
+				var widthDiv = document.getElementById("width");
+				var heightDiv = document.getElementById("height");
+
+				widthDiv.innerHTML = "width: " + window.innerWidth + "px"
+				heightDiv.innerHTML = "height: " + window.innerHeight + "px"
+			};
+			resize();
+
+			window.addEventListener("resize", resize);
+
+			var mouse = function(event) {
+				var mouseDiv = document.getElementById("mouse");
+
+				posLeft = event.clientX + 10;
+				if (posLeft + mouseDiv.offsetWidth > window.innerWidth - 10) {
+					posLeft = window.innerWidth - mouseDiv.offsetWidth - 10;
+				}
+				mouseDiv.style.left = posLeft + "px";
+
+				posTop = event.clientY + 10;
+				if (posTop + mouseDiv.offsetHeight > window.innerHeight - 10) {
+					posTop = window.innerHeight - mouseDiv.offsetHeight - 10;
+				}
+				mouseDiv.style.top = posTop + "px";
+
+				mouseDiv.innerHTML = event.clientX + "×" + event.clientY;
+			};
+			window.addEventListener("mousemove", mouse);
+
+			var keypress = function(e) {
+				e = e || window.event;
+
+				if (e.key == "f") {
+					var body = document.getElementById("body");
+
+					if (document.fullscreenElement) {
+						document.exitFullscreen();
+					} else {
+						body.requestFullscreen();
+					}
+				}
+			};
+			window.onkeypress = keypress;
+		};
+	</script>
 </head>
 
-<body>
+<body id="body">
 
 	<header>
 	</header>
 
 	<section>
+		<div id="mouse"></div>
+
 		<div class = "vertical"></div>
+		<div id="width"></div>
+
 		<div class = "horizontal"></div>
+		<div id="height"></div>
+
+		<div id="hint">
+			Press "f" to toggle fullscreen
+		</div>
 	</section>
 
 	<footer>
